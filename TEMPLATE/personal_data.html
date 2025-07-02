@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-white">Personal Data</h2>
+    <div class="card p-4 shadow-lg" style="background: white">
+        <p><i class="fas fa-user text-primary"></i> <strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><i class="fas fa-envelope text-danger"></i> <strong>Email:</strong> {{ user.email }}</p>
+        <p><i class="fas fa-map-marker-alt text-success"></i> <strong>City:</strong> {{ user.city }}</p>
+        <p><i class="fas fa-flag text-warning"></i> <strong>Nationality:</strong> {{ user.nationality }}</p>
+        
+        <p><i class="fas fa-cloud-sun text-info"></i> <strong>Preferred Season:</strong> {{ user_preferences.season }}</p>
+        <p><i class="fas fa-suitcase-rolling text-secondary"></i> <strong>Travel Type:</strong> {{ user_preferences.activity_type }}</p>
+        
+        <p>Last updated: {% now "Y-m-d H:i:s" %}</p>
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary mt-3">
+            <i class="fas fa-edit"></i> Edit Profile
+        </a>
+
+    </div>
+</div>
+<br><br><br>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

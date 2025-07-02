@@ -1,0 +1,287 @@
+{% extends "core/base.html" %}
+{% block content %}
+
+<title>User Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+ 
+    
+    .section-title {
+        color :Blue; 
+        font-weight: 600;
+        border-bottom: 2px solid #475569; 
+        padding-bottom: 12px;
+        margin-bottom: 24px;
+        font-size: 1.5rem;
+    }
+    
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-img-top {
+        object-fit: cover;
+        height: 220px;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+    
+    .badge {
+        font-weight: 500;
+        padding: 0.5em 0.75em;
+        border-radius: 6px;
+    }
+    
+    .btn {
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary {
+        border-color: #3b82f6; /* Tailwind blue-500 */
+        color: #3b82f6;
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    .btn-outline-info {
+        border-color: #06b6d4; /* Tailwind cyan-500 */
+        color: #06b6d4;
+    }
+    
+    .btn-outline-info:hover {
+        background-color: #06b6d4;
+        color: white;
+    }
+    
+    .category-indicator {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        z-index: 10;
+    }
+    
+    .adventure { background-color: #f97316; } /* Orange */
+    .beach { background-color: #0ea5e9; } /* Sky blue */
+    .cultural { background-color: #8b5cf6; } /* Violet */
+    .hiking { background-color: #22c55e; } /* Green */
+    .luxury { background-color: #eab308; } /* Yellow */
+    
+    .view-toggle {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+    
+    .view-toggle button {
+        background-color: #334155; /* Tailwind slate-700 */
+        color: #cbd5e1; /* Tailwind slate-300 */
+        border: none;
+        padding: 5px 10px;
+        border-radius: 6px;
+        margin-left: 10px;
+        transition: all 0.2s ease;
+    }
+    
+    .view-toggle button.active {
+        background-color: #3b82f6; /* Tailwind blue-500 */
+        color: white;
+    }
+    
+    /* Alternative styling for tips */
+    .tip-card {
+        border-left: 4px solid;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+    
+    .tip-adventure { border-color: #f97316; }
+    .tip-beach { border-color: #0ea5e9; }
+    .tip-cultural { border-color: #8b5cf6; }
+    .tip-hiking { border-color: #22c55e; }
+    .tip-luxury { border-color: #eab308; }
+</style>
+
+<div class="container mt-5">
+
+    
+    <!-- Recommended Destinations -->
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="section-title">Recommended Destinations</h3>
+        <div class="view-toggle">
+            <button id="grid-view-dest" class="active"><i class="fas fa-th-large"></i></button>
+            <button id="list-view-dest"><i class="fas fa-list"></i></button>
+        </div>
+    </div>
+    
+    <div class="row" id="destinations-container">
+        {% for destination in recommended_destinations %}
+        <div class="col-md-6 col-lg-4 mb-4 destination-card">
+            <div class="card h-100 bg-white shadow">
+                <div class="category-indicator {{ destination.travel_type|lower }}">{{ destination.travel_type }}</div>
+                <img src="{{ destination.image.url }}" class="card-img-top" alt="{{ destination.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ destination.name }}</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-success">⭐ {{ destination.average_rating|default:"0" }}/5</span>
+                        <span class="badge bg-info">{{ destination.season }}</span>
+                    </div>
+                    <p class="card-text small text-muted mb-3">
+                        {{ destination.description|truncatechars:100 }}
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'destination_map' destination.id %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-map-marker-alt me-1"></i> View Details
+                        </a>
+                        <a href="{% url 'create_trip' destination.id %}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-plus me-1"></i> Plan Trip
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No recommendations available. <a href="{% url 'edit_profile' %}">Update your preferences</a> to see personalized destinations.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Upcoming Events -->
+    <h3 class="section-title mt-5">Upcoming Events</h3>
+    <div class="row">
+        {% for event in recommended_events %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow">
+                <div class="category-indicator {{ event.event_type|lower }}">{{ event.event_type }}</div>
+                <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ event.name }}</h5>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="far fa-calendar-alt text-primary me-2"></i>
+                        <span>{{ event.start_date|date:"M d, Y" }}</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-map-marker-alt text-danger me-2"></i>
+                        <span>{{ event.location }}</span>
+                    </div>
+                    <a href="{% url 'event_detail' event.id %}" class="btn btn-outline-info btn-sm w-100">
+                        <i class="fas fa-ticket-alt me-1"></i> View & Book
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No upcoming events available for your preferences.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Travel Tips -->
+    <h3 class="section-title mt-5">Travel Tips</h3>
+    <div class="row">
+        {% for tip in travel_tips %}
+        <div class="col-md-6 mb-4">
+            <div class="tip-card {% if 'adventure' in tip.title|lower %}tip-adventure{% elif 'beach' in tip.title|lower %}tip-beach{% elif 'cultural' in tip.title|lower %}tip-cultural{% elif 'hiking' in tip.title|lower %}tip-hiking{% elif 'luxury' in tip.title|lower %}tip-luxury{% endif %}">
+    <h5><i class="fas fa-lightbulb text-warning me-2"></i>{{ tip.title }}</h5>
+    <p class="mb-0 text-black">{{ tip.content }}</p>
+</div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No travel tips available.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<br><br><br>
+<br><br><br>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Notifications + SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // SweetAlert Notifications
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    text: "{{ message }}",
+                    icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            {% endfor %}
+        {% endif %}
+        
+        // View Toggle for Destinations
+        const gridViewDest = document.getElementById('grid-view-dest');
+        const listViewDest = document.getElementById('list-view-dest');
+        const destinationsContainer = document.getElementById('destinations-container');
+        
+        gridViewDest.addEventListener('click', function() {
+            destinationsContainer.classList.remove('list-view');
+            gridViewDest.classList.add('active');
+            listViewDest.classList.remove('active');
+            
+            // Reset all cards to grid view
+            document.querySelectorAll('.destination-card').forEach(card => {
+                card.classList.remove('col-12');
+                card.classList.add('col-md-6', 'col-lg-4');
+            });
+        });
+        
+        listViewDest.addEventListener('click', function() {
+            destinationsContainer.classList.add('list-view');
+            listViewDest.classList.add('active');
+            gridViewDest.classList.remove('active');
+            
+            // Change all cards to list view
+            document.querySelectorAll('.destination-card').forEach(card => {
+                card.classList.remove('col-md-6', 'col-lg-4');
+                card.classList.add('col-12');
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

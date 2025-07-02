@@ -1,0 +1,104 @@
+{% extends "core/base.html" %}
+{% block content %}
+<br><br><br>
+<title>Booking Confirmation</title>
+    <style>
+       
+       
+        .success-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .success-icon {
+            font-size: 48px;
+            color: #34c759;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            background-color: #eafaf1;
+        }
+        h2 {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-top: 0;
+        }
+        .ticket-details {
+            background-color: #f5f7fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 4px;
+        }
+        .ticket-code {
+            font-family: monospace;
+            background: #2c3e50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 18px;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+        .event-details {
+            margin-bottom: 25px;
+        }
+        .event-details p {
+            margin: 8px 0;
+        }
+        .label {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-right: 8px;
+            display: inline-block;
+            width: 80px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #95a5a6;
+        }
+    </style>
+
+    <div class="container" style="max-width: 600px; margin: auto; padding: 20px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div class="success-header">
+            <div class="success-icon">✓</div>
+            <h2>Booking Confirmed</h2>
+            <p>Your event registration has been successfully completed</p>
+        </div>
+        
+        <div class="event-details">
+            <p><span class="label">Event:</span> {{ registration.event.title }}</p>
+            <p><span class="label">Date:</span> {{ registration.event.start_date|date:"F j, Y" }}</p>
+        </div>
+        
+        <div class="ticket-details">
+            <p>Your personal ticket code:</p>
+            <div class="ticket-code">{{ registration.ticket_code }}</div>
+            <p style="margin-top: 15px; font-size: 14px;">Please keep this code handy for event check-in.</p>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="{% url 'dashboard' %}" class="button">Return to Dashboard</a>
+        </div>
+        
+        <div class="footer">
+            <p>Thank you for registering. We look forward to seeing you at the event!</p>
+            <p>If you have any questions, please contact support.</p>
+        </div>
+    </div>
+<br><br><br>
+{% endblock content %}

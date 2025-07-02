@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+{% block content %}
+     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+
+<br><br><br>
+    <div class="container">
+        <h2 class="mb-4"><i class="fas fa-suitcase-rolling icon-style"></i> My Trips</h2>
+        
+        
+        {% if trips %}
+            <div class="row">
+                {% for trip in trips %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card trip-card">
+                            <div class="card-body trip-card-body">
+                                <h5 class="trip-header">
+                                    <i class="fas fa-map-marked-alt"></i>{{ trip.title }}
+                                </h5>
+                                <p><strong>Destination:</strong> {{ trip.destination.name }}</p>
+                                <p><strong>Start:</strong> {{ trip.start_date }} | <strong>End:</strong> {{ trip.end_date }}</p>
+                                <div class="d-flex">
+                                    <a href="{% url 'trip_detail' trip.id %}" class="btn btn-detail btn-sm">
+                                        <i class="fas fa-info-circle"></i> View Details
+                                    </a>
+
+                                    <form action="{% url 'delete_trip' trip.id %}" method="POST" onsubmit="return confirm('Are you sure you want to delete this trip?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+            <!-- Back Button -->
+       
+        <a href="{% url 'dashboard' %}" class="btn btn-back mb-4">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+        </a>
+        {% else %}
+            <div class="no-trips">
+                <i class="fas fa-exclamation-circle icon-style"></i> You haven't created any trips yet. <br>
+                <a href="{% url 'create_trip' 1 %}">
+                    <i class="fas fa-plus-circle"></i> Create Your First Trip
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<br><br><br>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

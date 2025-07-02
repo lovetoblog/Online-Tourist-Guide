@@ -1,0 +1,532 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Travel Analytics Dashboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    body {
+     background-image: linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);
+        font-family: 'Inter', sans-serif;
+        color: #212529;
+        
+    }
+
+    h1, h4, h6 {
+        font-weight: 700;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        border-bottom: 2px solid #4e73df;
+        padding-bottom:20px 10px;
+        color: #334e68;
+        margin-bottom: 32px;
+    }
+
+    .stats-card {
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        padding: 24px;
+        transition: all 0.3s ease;
+        background: white;
+        border: 1px solid #e6ecf1;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-icon {
+        font-size: 2.5rem;
+        color: #4e73df;
+    }
+
+    .stats-number {
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #1b1e23;
+    }
+
+    .stats-label {
+        font-size: 0.95rem;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 320px;
+        width: 100%;
+        margin-bottom: 32px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #f4f6f9;
+        font-weight: 600;
+        color: #4e73df;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .card-body {
+        background-color: #ffffff;
+        padding: 24px;
+    }
+
+    .insight-card {
+        background: white;
+        border-left: 5px solid #70c1b3;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+
+    .recommendation-card {
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.07);
+        background-color: #ffffff;
+        transition: transform 0.3s ease;
+    }
+
+    .recommendation-card:hover {
+        transform: scale(1.02);
+    }
+
+    .recommendation-card img {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .btn-primary {
+        background-color: #4e73df;
+        border-color: #4e73df;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background-color: #375ac2;
+        border-color: #375ac2;
+    }
+
+    .list-group-item {
+        background-color: #f8f9fc;
+        padding: 14px 22px;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 10px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .list-group-item:hover {
+        background-color: #e2e6ea;
+    }
+
+    .trend-up {
+        color: #1cc88a;
+        font-weight: 600;
+    }
+
+    .trend-down {
+        color: #e74a3b;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .stats-card {
+            text-align: center;
+        }
+
+        .stats-icon {
+            margin-top: 10px;
+        }
+    }
+    .hero {
+       margin:32px;
+        padding:20px;
+    }
+</style>
+
+<div class='hero'>
+
+
+
+<div class="container-fluid">
+  
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-white-100"> Top Performing Categories by : {{user.username}}</h1>
+        {% comment %} <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report 
+        </a> {% endcomment %}
+    </div>
+
+    <!-- Key Stats Row -->
+    <div class="row dashboard-section">
+        <div class="col-12">
+            <h4 class="section-title">Your Travel Summary</h4>
+        </div>
+        
+        <!-- Trips Count -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card bg-primary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stats-number">{{ user_stats.trip_count }}</div>
+                        <div class="stats-label text-black-50">Total Trips</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reviews Count -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card bg-warning text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stats-number">{{ user_stats.review_count }}</div>
+                        <div class="stats-label text-black-50">Reviews Posted</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Photos Count -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card bg-secondary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stats-number">{{ user_stats.photo_count }}</div>
+                        <div class="stats-label text-black-50">Photos Shared</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Events Count -->
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stats-number">{{ user_stats.event_registrations }}</div>
+                        <div class="stats-label text-black-50">Events Joined</div>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Travel Pattern Analysis -->
+    <div class="row dashboard-section">
+        <div class="col-12">
+            <h4 class="section-title mt-5">Your Travel Patterns</h4>
+        </div>
+        
+        <!-- Travel Timeline Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Travel Activity Timeline</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="tripsTimelineChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="mt-4 text-center small">
+                        <span class="mr-2">
+                            <i class="fas fa-circle text-primary"></i> Trips Created
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Travel Preferences -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Your Travel Preferences</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3">
+                            <i class="fas fa-umbrella-beach fa-2x text-gray-300"></i>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">Favorite Season</div>
+                            <div class="h5 mb-0 text-gray-800">{{ user_stats.favorite_season|title }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="mr-3">
+                            <i class="fas fa-hiking fa-2x text-gray-300"></i>
+                        </div>
+                        <div>
+                            <div class="small text-gray-500">Preferred Travel Type</div>
+                            <div class="h5 mb-0 text-gray-800">{{ user_stats.favorite_travel_type|title }}</div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Analytics -->
+    <div class="row dashboard-section">
+        <div class="col-12">
+            <h4 class="section-title">Detailed Analytics</h4>
+        </div>
+        
+        <!-- Season Distribution -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Seasonal Travel Patterns</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="seasonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Budget Distribution -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Budget Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Engagement & Top Destinations -->
+    <div class="row dashboard-section">
+        <!-- Left Column - Top Rated & Most Visited -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Your Favorite Destinations</h6>
+                </div>
+                <div class="card-body">
+                    <h5 class="small font-weight-bold">Top Rated Places</h5>
+                    <div class="list-group mb-4">
+                        {% for review_item in top_rated_destinations %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ review_item.destination.name }}</h6>
+                                <small>
+                                    {% for i in '12345'|make_list %}
+                                        {% if forloop.counter <= review_item.rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </small>
+                            </div>
+                            <small class="text-muted">{{ review_item.destination.location }}</small>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-3">
+                            <p class="text-muted">You haven't rated any destinations yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <h5 class="small font-weight-bold">Most Visited Places</h5>
+                    <div class="list-group">
+                        {% for place in most_visited %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ place.destination__name }}</h6>
+                                <small>{{ place.visit_count }} visits</small>
+                            </div>
+                            <small>
+                                <a href="{% url 'destination_map' place.destination__id %}" class="text-primary">
+                                    <i class="fas fa-map-marker-alt"></i> View on map
+                                </a>
+                            </small>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-3">
+                            <p class="text-muted">You haven't visited any destinations yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column - Recommendations -->
+        <div class="col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Personalized Recommendations</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">Based on your travel history and preferences, we think you'll love these destinations:</p>
+                    
+                    <div class="row">
+                        {% for destination in recommended_destinations %}
+                        <div class="col-md-6">
+                            <div class="recommendation-card">
+                                {% if destination.image %}
+                                <img src="{{ destination.image.url }}" class="card-img-top" alt="{{ destination.name }}">
+                                {% else %}
+                                <div class="bg-light text-center py-5">
+                                    <i class="fas fa-mountain fa-3x text-secondary"></i>
+                                </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ destination.name }}</h6>
+                                    <p class="card-text small text-muted">{{ destination.location }}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <span class="badge badge-primary">{{ destination.travel_type|title }}</span>
+                                        <span class="badge badge-info">{{ destination.season|title }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12 text-center py-3">
+                            <p class="text-muted">Start exploring to get personalized recommendations!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+</div>
+
+
+<!-- In your base.html or directly in the analytics template -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Parse the chart_data JSON passed from Django
+  const chartData = JSON.parse('{{ chart_data|escapejs }}');
+
+  // Trips by month chart
+  const tripsTimelineCtx = document.getElementById('tripsTimelineChart').getContext('2d');
+  const tripsTimelineChart = new Chart(tripsTimelineCtx, {
+    type: 'bar',
+    data: {
+      labels: chartData.trips_by_month.labels,
+      datasets: [{
+        label: 'Trips by Month',
+        data: chartData.trips_by_month.data,
+        backgroundColor: 'rgba(78, 115, 223, 0.1)',
+        borderColor: 'rgba(78, 115, 223, 1)',
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: 'rgba(78, 115, 223, 1)',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: 'rgba(78, 115, 223, 1)'
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+
+     // Seasonal Travel Patterns Chart
+    var ctxSeason = document.getElementById('seasonChart').getContext('2d');
+    var seasonChart = new Chart(ctxSeason, {
+        type: 'line', // You can change this to 'bar' or other types
+        data: {
+            labels: chartData.season_breakdown.labels,  // Labels for the seasons
+            datasets: [{
+                data: chartData.season_breakdown.data, // Data for the season counts
+                backgroundColor: ['#ff5733', '#33ff57', '#3357ff', '#f0f033'],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Budget Distribution Chart
+    var ctxBudget = document.getElementById('budgetChart').getContext('2d');
+    var budgetChart = new Chart(ctxBudget, {
+        type: 'pie', // You can change this to 'pie', 'line', etc.
+        data: {
+            labels: chartData.budget_breakdown.labels, // Labels for the budget ranges
+            datasets: [{
+                label: 'Travel Budget',
+                data: chartData.budget_breakdown.data, // Data for budget counts
+                backgroundColor: '#36b9cc',
+                borderColor: '#1cc88a',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+</script>
+
+{% endblock %}

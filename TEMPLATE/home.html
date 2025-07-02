@@ -1,0 +1,560 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<style>
+    /* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+/* Hero Section Enhancement */
+.hero {
+    position: relative;
+    height: 100vh;
+    background: url('https://res.cloudinary.com/www-travelpakistani-com/image/upload/v1661243929/Pakistan_Monument_travelpakistani_pic.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-bottom: 60px;
+}
+
+
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.hero p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.btn-explore {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-explore:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+    color: white;
+}
+
+/* Section Styling */
+section {
+    padding: 60px 0;
+    position: relative;
+}
+
+.section-heading {
+    position: relative;
+    margin-bottom: 50px;
+    padding-bottom: 15px;
+    font-weight: 700;
+    color: #333;
+}
+
+.section-heading:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #28a745, #20c997);
+    border-radius: 2px;
+}
+
+/* Alternating Section Backgrounds */
+section:nth-of-type(odd) {
+    background-color: #ffffff;
+}
+
+section:nth-of-type(even) {
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+section:nth-of-type(even):before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" fill="none" stroke="%23e9ecef" stroke-width="1"/></svg>');
+    opacity: 0.4;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-img-top {
+    height: 220px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #28a745;
+}
+
+/* Event Section */
+.event-date {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 15px 10px;
+    text-align: center;
+    border-radius: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Travel Tips Section */
+.tip-card {
+    border-left: 4px solid #ffc107;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.tip-card:hover {
+    border-left: 10px solid #ffc107;
+}
+
+/* Photo Section */
+.photo-upload-container {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* About Us Section */
+.about-image {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Contact Section */
+.contact-icon {
+    font-size: 2.5rem;
+    color: #28a745;
+    margin-bottom: 20px;
+    height: 70px;
+    width: 70px;
+    line-height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.2);
+    display: inline-block;
+}
+
+.contact-card {
+    padding: 30px;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Admin Badge */
+.admin-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: #000;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 10;
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, #222, #343a40);
+    color: white;
+    text-align: center;
+    padding: 40px 0;
+    margin-top: 60px;
+}
+
+.footer a {
+    color: #ffc107;
+    transition: all 0.3s ease;
+}
+
+.footer a:hover {
+    color: #ffda6a;
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero p {
+        font-size: 1.2rem;
+    }
+    
+    .section-heading {
+        margin-bottom: 30px;
+    }
+    
+    .card-img-top {
+        height: 180px;
+    }
+}
+</style>
+<div class="container ">
+   
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1 class="display-4">Explore Your Next Destination</h1>
+        <p class="lead">Find the best places to visit, tailored for every season.</p>
+        <a href="#dest" class="btn-explore">Visit Site</a>
+    </div>
+</div>
+
+<!-- Admin Dashboard Link (Only visible to staff) -->
+{% if user.is_authenticated and user.is_staff %}
+<div class="container mt-3">
+    <div class="alert alert-warning">
+        <i class="fas fa-user-shield"></i> Staff Mode Active - 
+        <a href="{% url 'admin:index' %}" class="alert-link">Access Admin Dashboard</a> | 
+        <a href="{% url 'admin:core_destination_changelist' %}" class="alert-link">Manage Destinations</a> | 
+        <a href="{% url "admin:core_review_changelist" %}" class="alert-link">Manage Reviews</a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Popular Destinations -->
+<section class="container mt-5" id="dest">
+    <h2 class="text-center section-heading">Popular Destinations</h2>
+    <div class="row">
+        {% for destination in popular_destinations %}
+            <div class="col-md-4 d-flex mb-4">
+                <div class="card w-100 shadow-sm">
+                    {% if user.is_authenticated or user.is_staff %}
+                        <span class="admin-badge">season:{{ destination.season }}</span>
+                    {% endif %}
+                    <img src="{{ destination.image.url }}" class="card-img-top" alt="{{ destination.name }}">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-capitalize">{{ destination.name }}</h5>
+                        <p class="card-text text-muted">{{ destination.short_description|truncatechars:100 }}</p>
+
+                        {% if user.is_authenticated %}
+                            {% if user.is_staff %}
+                                <!-- Admin View -->
+                                <div class="mt-auto">
+                                    <a href="{% url 'admin:core_destination_change' destination.id %}" class="btn btn-outline-warning w-100 mb-2">Edit/Manage</a>
+                                    <a href="{% url 'admin:core_destination_change' destination.id %}" class="btn btn-primary w-100">View Details</a>
+                                </div>
+                            {% else %}
+                                <!-- Regular Logged-in User View -->
+                                <a href="{% url 'destination_map' destination.id %}" class="btn btn-primary mt-auto">Learn More</a>
+                            {% endif %}
+                        {% else %}
+                            <!-- Not Logged-in View -->
+                            <a href="{% url 'login' %}?next={% url 'destination_map' destination.id %}" class="btn btn-outline-secondary mt-auto">Login to Explore</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section class="container mt-5 bg-light py-4 rounded">
+    <h2 class="text-center section-heading">Upcoming Travel Events</h2>
+    <div class="row">
+        {% if events %}
+            {% for event in events %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="row g-0">
+                            <div class="col-3">
+                                <div class="event-date">
+                                    <div class="h3 mb-0">{{ event.date|date:"d" }}</div>
+                                    <div>{{ event.date|date:"M" }}</div>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ event.title }}</h5>
+                                    <p class="card-text">{{ event.description|truncatechars:100 }}</p>
+                                    {% if user.is_staff %}
+                                    <a href="{% url 'admin:core_event_change' event.id %}" class="btn btn-sm btn-outline-primary">Manage Event</a>
+
+                                    {% elif user.is_authenticated %}
+                                        <a href="{% url 'event_detail' event.id %}" class="btn btn-sm btn-outline-primary">More Info</a>
+                                    {% else %}
+                                        <a href="{% url 'login' %}?next={% url 'event_detail' event.id %}" class="btn btn-sm btn-outline-secondary">Login to View</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p>No upcoming events at the moment. Check back soon!</p>
+                {% if user.is_authenticated and user.is_staff %}
+                    <a href="{% url 'admin:core_event_add' %}" class="btn btn-success">Add New Event</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Travel Tips Section -->
+<section class="container mt-5">
+    <h2 class="text-center section-heading">Travel Tips & Advice</h2>
+    <div class="row">
+        {% if tips %}
+            {% for tip in tips %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm tip-card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ tip.title }}</h5>
+                            <p class="card-text">{{ tip.content|truncatechars:150 }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">created at: {{ tip.created_at}}</small>
+                                
+                            </div>
+                            {% if user.is_staff %}
+                                <a href="{% url 'admin:core_traveltip_change' tip.id %}" class="btn btn-warning w-100 mt-5 ">Manage</a>
+                                {% else %}
+                                 <p>follow the shared  advice!</p>
+
+                                {% endif %}  
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center">
+                <p>No travel tips available yet. Be the first to share your advice!</p>
+                
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Traveler Photos Section -->
+<section class="container mt-5">
+    <h2 class="text-center section-heading">Traveler Photos</h2>
+    
+    
+    <!-- Community Photos Display -->
+    <div class="row">
+        {% for photo in all_photos %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-lg">
+                    <img src="{{ photo.image.url }}" class="card-img-top" alt="Travel photo">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="card-title mb-0">{{ photo.user.username }}</h6>
+                            <small class="text-muted">{{ photo.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        
+                        {% if photo.caption %}
+                            <p class="card-text">{{ photo.caption }}</p>
+                        {% endif %}
+                        
+                        {% if user.is_authenticated %}
+                            <!-- Like Button -->
+                            <form method="POST" action="{% url 'like_photo' photo.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm {% if user in photo.likes.all %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                    ❤️ {{ photo.likes.count }}
+                                </button>
+                            </form>
+
+                            <!-- Comments Dropdown -->
+                            <div class="mt-3">
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#comments-{{ photo.id }}" role="button">
+                                    <i class="far fa-comment"></i> {{ photo.comments.count }} Comments
+                                </a>
+                                <div class="collapse mt-2" id="comments-{{ photo.id }}">
+                                    <!-- Display comments -->
+                                    {% for comment in photo.comments.all %}
+                                        <div class="mb-2 p-2 bg-light rounded">
+                                            <strong>{{ comment.user.username }}</strong>: {{ comment.comment }}
+                                            <div><small class="text-muted">{{ comment.created_at|date:"M d, Y" }}</small></div>
+                                        </div>
+                                    {% empty %}
+                                        <p class="text-muted">No comments yet. Be the first!</p>
+                                    {% endfor %}
+                                    
+                                    <!-- Comment Form -->
+                                    <form method="POST" action="{% url 'comment_photo' photo.id %}" class="mt-2">
+                                        {% csrf_token %}
+                                        <div class="input-group">
+                                            <input type="text" name="comment" class="form-control" placeholder="Add a comment">
+                                            <button class="btn btn-outline-primary" type="submit">Post</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Admin Controls -->
+                            
+                        {% else %}
+                            <p><a href="{% url 'login' %}">Login to like or comment</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center">
+                <p>No photos shared yet. Be the first to share your travel photos!</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary">Login to Share Photos</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Show More Photos Button (if there are more than initial limit) -->
+    {% if all_photos.count > 6 %}
+        <div class="text-center mt-4">
+            <a href="{% url 'all_photos' %}" class="btn btn-outline-success">View All Photos</a>
+        </div>
+    {% endif %}
+</section>
+
+<!-- About Us Section -->
+<section class="container mt-5">
+    <h2 class="text-center section-heading">About Us</h2>
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcV605q-o3d2fNu4kHJRnbyheJywKZwwMzQA&s" class="img-fluid rounded shadow" alt="About Us">
+        </div>
+        <div class="col-md-6">
+            <h3>Our Mission</h3>
+            <p>We are dedicated to showcasing the most beautiful destinations and providing travelers with authentic experiences and connections worldwide.</p>
+            
+            <h3 class="mt-4">Our Story</h3>
+            <p>Founded by passionate travelers, our platform aims to create a community where explorers can share their experiences, discover new destinations, and plan their next adventure with confidence.</p>
+                    </div>
+    </div>
+</section>
+
+<!-- Contact Us Section -->
+<section class="container mt-5">
+    <h2 class="text-center section-heading">Contact Us</h2>
+    <div class="row">
+        <div class="col-md-4 text-center mb-4">
+            <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <h5>Our Location</h5>
+            <p>123 Travel Street, Islamabad, Pakistan</p>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+            </div>
+            <h5>Phone Number</h5>
+            <p>+92 300 1234567</p>
+        </div>
+        <div class="col-md-4 text-center mb-4">
+            <div class="contact-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <h5>Email Address</h5>
+            <p>OTG@OnlinetouristGuuides.com</p>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Send Us a Message</h4>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" name="subject" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+<!-- Footer -->
+
+
+<!-- Bootstrap JS and Font Awesome -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+{% endblock %}
